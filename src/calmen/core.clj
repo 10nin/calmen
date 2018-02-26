@@ -1,6 +1,5 @@
-(ns calmen.core)
+(ns calmen.core
+  (:require [clj-http.client :as htc]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn get-html [url]
+  (:body (htc/get url)))
