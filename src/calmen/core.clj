@@ -1,5 +1,6 @@
 (ns calmen.core
-  (:require [clj-http.client :as htc]))
+  (:require [clojure.string :as str]
+            [pl.danieljanus.tagsoup :as tagsoup]))
 
 (defn get-html [url]
-  (:body (htc/get url)))
+  (tagsoup/parse url))
