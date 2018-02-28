@@ -1,6 +1,10 @@
 (ns calmen.core
-  (:require [clojure.string :as str]
-            [pl.danieljanus.tagsoup :as tagsoup]))
+  (:require [net.cgrand.enlive-html :as html]))
 
-(defn get-html [url]
-  (tagsoup/parse url))
+(defn fetch-url [url]
+  (html/html-resource (java.net.URL. url)))
+
+(defn get-event-month [lib-html-root]
+  (html/select lib-html-root [:table.EventYear_EventCalendar]))
+
+(def *lib-html-root* (html/select (fetch-url "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx") [:table.EventMain]))

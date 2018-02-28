@@ -4,5 +4,5 @@
 
 (deftest get-html-test
   (testing "Simple http get test."
-    (def ret (calmen.core/get-html "http://example.com"))
-    (is (vector? ret))))
+    (def ret (calmen.core/fetch-url "http://example.com"))
+    (is (< 0 (count ret)))))
