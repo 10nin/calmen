@@ -4,7 +4,7 @@
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
 
-(defn get-event-month [event-month-node]
+(defn get-EventMonth-node [event-month-node]
   (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
 
 (defn gen-EventYearAttributes []
@@ -14,7 +14,8 @@
 (defn get-EventYearCalendar [url]
   (html/select (fetch-url url) [:div#EventYear_EventCalendars]))
 
-(defn get-EventMonth [event-year-calendar]
+(defn get-EventMonths [event-year-calendar-node]
   (let [month-keys (gen-EventYearAttributes)]
-    nil)
-;(def *lib-html-root* (html/select (fetch-url "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx") [:table.EventMain]))
+    (for [k month-keys] (get-EventMonth-node (html/select event-year-calendar-node [k])))))
+
+;"http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx"
