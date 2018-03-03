@@ -1,10 +1,11 @@
 (ns calmen.core
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [clojure.string :as str]
+            [net.cgrand.enlive-html :as html]))
 
 (defn get-EventMonth [event-month-node]
   (list
    (first (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
-   (for [d (html/select event-month-node [:td.Closing])] (first (:content d)))))
+   (for [d (html/select event-month-node [:td.Closing])] (str/replace (str/replace (first (:content d)) "(" "") ")" ""))))
 
 (defn gen-EventYearAttributes []
   (let [attr-base "table#dnn_ctr12401_Events_EventYear_EventCalendar"]
