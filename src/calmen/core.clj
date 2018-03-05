@@ -3,7 +3,7 @@
             [net.cgrand.enlive-html :as html]
             [selmer.parser :as tmpl]))
 
-(def *CALENDAR-TEMPLATE* "
+(def ^:dynamic *CALENDAR-TEMPLATE* "
 BEGIN:VCALENDAR
 METHOD:PUBLISH
 VERSION:2.0
@@ -50,12 +50,18 @@ END:VEVENT
   (let [month-keys (gen-EventYearAttributes)]
     (for [k month-keys] (get-EventMonth (html/select event-year-calendar-node [k])))))
 
-(defn format-datetime [year-month day]
-  (str/join (map #(format "%02d" %) (map #(Integer/parseInt %) (conj (str/split (str/replace year-month "月" "") #"年") day)))))
+(defn format-yyyymmdd [year-month day]
+  (str/join (map #(format "%02d" %) (conj (vec (map #(Integer/parseInt %) (str/split (str/replace year-month "月" "") #"年"))) day))))
 
-(defn gen-ClosingList [event-month-dic]
+(defn format-datetime [event-month-dic f]
   (for [month-day event-month-dic]
-    (for [d (:days month-day)] (format-datetime (:month month-day) d))))
-  
+    (for [d (:days month-day)] (format-yyyymmdd (:month month-day) (f (Integer/parseInt d))))))
+
+(defn get-ClosingStartDays [event-month-dic]
+  (format-datetime event-month-dic clojure.core/identity))
+
+(defn get-ClosingEndDays [event-month-dic]
+  (format-datetime event-month-dic inc))
+
 (defn -main []
   (get-ClosingCalendar (get-EventYearCalendar "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")))
