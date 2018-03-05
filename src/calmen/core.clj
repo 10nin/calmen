@@ -4,9 +4,8 @@
             [selmer.parser :as tmpl]))
 
 (defn get-EventMonth [event-month-node]
-  (list
    (assoc {} :month (first (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
-          :days (for [d (html/select event-month-node [:td.Closing])] (str/replace (str/replace (first (:content d)) "(" "") ")" "")))))
+          :days (for [d (html/select event-month-node [:td.Closing])] (str/replace (str/replace (first (:content d)) "(" "") ")" ""))))
 
 (defn gen-EventYearAttributes []
   (let [attr-base "table#dnn_ctr12401_Events_EventYear_EventCalendar"]
