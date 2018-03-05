@@ -53,8 +53,9 @@ END:VEVENT
 (defn format-datetime [year-month day]
   (str/join (map #(format "%02d" %) (map #(Integer/parseInt %) (conj (str/split (str/replace year-month "月" "") #"年") day)))))
 
-;(defn gen-ClosingList [event-month-dic]
-;  (for [elm in event-month-dic))
+(defn gen-ClosingList [event-month-dic]
+  (for [month-day event-month-dic]
+    (for [d (:days month-day)] (format-datetime (:month month-day) d))))
   
 (defn -main []
   (get-ClosingCalendar (get-EventYearCalendar "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")))
