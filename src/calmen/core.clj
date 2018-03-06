@@ -30,10 +30,23 @@ BEGIN:VEVENT
 TRANSP:OPAQUE
 SUMMARY:図書館休み
 DTSTART;VALUE=DATE:{{elm.StartDate}}
-DTEND;VALUE=DATE:{{elm.EndDate}}20180317
+DTEND;VALUE=DATE:{{elm.EndDate}}
 END:VEVENT
 [% end for %]
 ")
+
+(defn render-Calendar []
+  nil)
+
+(defn make-calendar-day [start-days end-days]
+  (loop [result [] sd start-days ed end-days]
+    (if (or (nil? (first sd)) (nil? (first ed))) result
+        (recur (conj result (assoc {} :StartDate (first sd) :EndDate (first ed))) (rest sd) (rest ed)))))
+
+(defn build-map [all-start-days all-end-days]
+  (loop [result [] sd all-start-days ed all-end-days]
+    (if (or (nil? (first sd)) (nil? (first ed))) result
+        (recur (concat result (make-calendar-day (first sd) (first ed))) (rest sd) (rest ed)))))
 
 (defn get-EventMonth [event-month-node]
    (assoc {} :month (first (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
