@@ -1,7 +1,8 @@
 (ns calmen.core
   (:require [clojure.string :as str]
             [net.cgrand.enlive-html :as html]
-            [selmer.parser :as tmpl]))
+            [selmer.parser :as tmpl]
+            [clojure.java.io :as io]))
 
 (def ^:dynamic *CALENDAR-TEMPLATE* "
 BEGIN:VCALENDAR
@@ -82,5 +83,10 @@ END:VEVENT
   (let [events (get-ClosingCalendar (get-EventYearCalendar url))]
     (render-Calendar events)))
 
+(defn write-to-file [file content]
+  (with-open [f (io/writer file)]
+    (.write f content)))
+
 (defn -main []
-  (make-iCal "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx"))
+  (let [ical (make-iCal "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")]
+    (write-to-file "/tmp/library_closing.ics" ical)))
