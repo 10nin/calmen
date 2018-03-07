@@ -25,18 +25,20 @@ TZNAME:JST
 TZOFFSETTO:+0900
 END:STANDARD
 END:VTIMEZONE
-[% for elm in ClosingList %]
+{% for elm in ClosingList %}
 BEGIN:VEVENT
 TRANSP:OPAQUE
 SUMMARY:図書館休み
 DTSTART;VALUE=DATE:{{elm.StartDate}}
 DTEND;VALUE=DATE:{{elm.EndDate}}
 END:VEVENT
-[% end for %]
+{% endfor %}
 ")
 
-(defn render-Calendar []
-  nil)
+(defn render-Calendar [events]
+  (let [all-start-days (get-ClosingStartDays events)
+        all-end-days (get-ClosingEndDays events)]
+    (tmpl/render *CALENDAR-TEMPLATE* {:ClosingList (build-map all-start-days all-end-days)})))
 
 (defn make-calendar-day [start-days end-days]
   (loop [result [] sd start-days ed end-days]
@@ -76,5 +78,9 @@ END:VEVENT
 (defn get-ClosingEndDays [event-month-dic]
   (format-datetime event-month-dic inc))
 
+(defn make-iCal [url]
+  (let [events (get-ClosingCalendar (get-EventYearCalendar url))]
+    (render-Calendar events)))
+
 (defn -main []
-  (get-ClosingCalendar (get-EventYearCalendar "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")))
+  (make-iCal "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx"))
