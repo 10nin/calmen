@@ -1,6 +1,6 @@
 (defproject calmen "0.1.0-SNAPSHOT"
   :description "A Tokyo Metropolitan Library annual calender getter."
-  :url ""
+  :url "https://gitlab.com/10nin/calmen"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
