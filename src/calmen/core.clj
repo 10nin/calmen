@@ -69,12 +69,14 @@ END:VEVENT
 (defn format-yyyymmdd [year-month day]
   (str/join (map #(format "%02d" %) (conj (vec (map #(Integer/parseInt %) (str/split (str/replace year-month "月" "") #"年"))) day))))
 
-(defn format-datetime [event-month-dic f]
-  (for [month-day event-month-dic]
-    (for [d (:days month-day)] (format-yyyymmdd (:month month-day) (f (Integer/parseInt d))))))
+(defn format-datetime
+  ([event-month-dic f]
+   (for [month-day event-month-dic]
+     (for [d (:days month-day)] (format-yyyymmdd (:month month-day) (f (Integer/parseInt d))))))
+  ([event-month-dic] (format-datetime event-month-dic identity)))
 
 (defn get-ClosingStartDays [event-month-dic]
-  (format-datetime event-month-dic clojure.core/identity))
+  (format-datetime event-month-dic))
 
 (defn get-ClosingEndDays [event-month-dic]
   (format-datetime event-month-dic inc))
