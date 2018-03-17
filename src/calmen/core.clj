@@ -78,6 +78,11 @@ END:VEVENT
 (defn get-ClosingEndDays [event-month-dic]
   (format-datetime event-month-dic inc))
 
+(defn render-Calendar [events]
+  (let [all-start-days (get-ClosingStartDays events)
+        all-end-days (get-ClosingEndDays events)]
+    (tmpl/render *CALENDAR-TEMPLATE* {:ClosingList (build-map all-start-days all-end-days)})))
+
 (defn make-iCal [url]
   (let [events (get-ClosingCalendar (get-EventYearCalendar url))]
     (render-Calendar events)))
@@ -85,11 +90,6 @@ END:VEVENT
 (defn write-to-file [file content]
   (with-open [f (io/writer file)]
     (.write f content)))
-
-(defn render-Calendar [events]
-  (let [all-start-days (get-ClosingStartDays events)
-        all-end-days (get-ClosingEndDays events)]
-    (tmpl/render *CALENDAR-TEMPLATE* {:ClosingList (build-map all-start-days all-end-days)})))
 
 (defn -main []
   (let [ical (make-iCal "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")]

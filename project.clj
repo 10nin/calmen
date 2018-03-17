@@ -5,4 +5,5 @@
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [enlive "1.1.6"]
-                 [selmer "1.11.7"]])
+                 [selmer "1.11.7"]]
+  :main calmen.core)
