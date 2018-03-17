@@ -36,15 +36,11 @@ END:VEVENT
 {% endfor %}
 ")
 
-(defn render-Calendar [events]
-  (let [all-start-days (get-ClosingStartDays events)
-        all-end-days (get-ClosingEndDays events)]
-    (tmpl/render *CALENDAR-TEMPLATE* {:ClosingList (build-map all-start-days all-end-days)})))
 
 (defn make-calendar-day [start-days end-days]
   (loop [result [] sd start-days ed end-days]
     (if (or (nil? (first sd)) (nil? (first ed))) result
-        (recur (conj result (assoc {} :StartDate (first sd) :EndDate (first ed))) (rest sd) (rest ed)))))
+        (recur (conj result {:StartDate (first sd) :EndDate (first ed)}) (rest sd) (rest ed)))))
 
 (defn build-map [all-start-days all-end-days]
   (loop [result [] sd all-start-days ed all-end-days]
@@ -52,11 +48,12 @@ END:VEVENT
         (recur (concat result (make-calendar-day (first sd) (first ed))) (rest sd) (rest ed)))))
 
 (defn get-EventMonth [event-month-node]
-   (assoc {} :month (first (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
-          :days (for [d (html/select event-month-node [:td.Closing])] (str/replace (str/replace (first (:content d)) "(" "") ")" ""))))
+   { :month (first (:content (first (html/select event-month-node [:td.EventTitle :table :tr :td]))))
+    :days (for [d (html/select event-month-node [:td.Closing])] (str/replace (str/replace (first (:content d)) "(" "") ")" ""))})
 
 (defn gen-EventYearAttributes []
   (let [attr-base "table#dnn_ctr12401_Events_EventYear_EventCalendar"]
+    ; generate attribute for 12 months
     (for [x (range 1 13)]  (keyword (str attr-base x)))))
 
 (defn get-EventYearCalendar [url]
@@ -88,6 +85,11 @@ END:VEVENT
 (defn write-to-file [file content]
   (with-open [f (io/writer file)]
     (.write f content)))
+
+(defn render-Calendar [events]
+  (let [all-start-days (get-ClosingStartDays events)
+        all-end-days (get-ClosingEndDays events)]
+    (tmpl/render *CALENDAR-TEMPLATE* {:ClosingList (build-map all-start-days all-end-days)})))
 
 (defn -main []
   (let [ical (make-iCal "http://www.library.metro.tokyo.jp/guide/central_library/tabid/1410/Default.aspx")]
